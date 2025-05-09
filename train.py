@@ -15,6 +15,7 @@ def train_model():
     # wandb.config.update({"class_weights": class_weights})
     # model.set_class_weights(class_weights) # this line is hypothetical 
 
+    wandb.init()  # This initializes the W&B run and gives access to wandb.config
 
     # Initialize YOLO model
     model = YOLO(CONFIG['model_name'])
@@ -24,21 +25,21 @@ def train_model():
     # Train model 
     results = model.train(
         data="/home/huwalter/WorkingFolderHugoWALTER/YOLOTaxa/DATA/yolo_dataset/",
-        epochs=wandb.config.epochs,
+        epochs=wandb.config.epochs,  # Use sweep-defined epochs
         imgsz=CONFIG['img_size'],
-        batch=CONFIG['batch_size'],
-        device=CONFIG['device'],
-        augment=False,
-        optimizer=CONFIG['optimizer'],
-        lr0=CONFIG['initial_lr'],
-        weight_decay=CONFIG['weight_decay'],
+        batch=wandb.config.batch_size,  # Use sweep-defined batch size
+        device=CONFIG['device'],  # Use sweep-defined device
+        augment=False,  # Keeping augment as False, but could be added to sweep if necessary
+        optimizer=wandb.config.optimizer,  # Use sweep-defined optimizer
+        lr0=wandb.config.initial_lr,  # Use sweep-defined learning rate
+        weight_decay=wandb.config.weight_decay,  # Use sweep-defined weight decay
         label_smoothing=CONFIG['label_smoothing'],
-        patience=CONFIG['patience'],
-        save_period=1, # Save model every epoch
+        patience=wandb.config.early_stopping_patience,  # Use sweep-defined early stopping patience
+        save_period=1,  # Save model every epoch
         project=CONFIG['project_name'],
         name=wandb.run.name,
     )
-
+    
     # Save and log model
     model_path = f"runs/classify/{wandb.run.name}/weights/best.pt"
     wandb.save(model_path)

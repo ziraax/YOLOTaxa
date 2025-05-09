@@ -6,7 +6,7 @@ from train import train_model
 sweep_config = {
     "method": "bayes",  # Bayesian optimization method
     "metric": {
-        "name": "val/accuracy_top1",  # Metric to optimize
+        "name": "top1_acc",  # Metric to optimize
         "goal": "maximize"  # Goal is to maximize the metric
     },
     "parameters": {

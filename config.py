@@ -9,7 +9,7 @@ YOLO_DATASET_PATH = Path("DATA/yolo_dataset")
 CONFIG = {
 
     # Project configuration
-    "project_name": "YOLOv8Classification500",
+    "project_name": "YOLOv11Classification500",
 
     # Raw data structure 
     "years": ["2022", "2023"],
@@ -48,8 +48,8 @@ CONFIG = {
     },
 
 
-    # YOLOv8 Training
-    "model_name": "yolov8m-cls.pt",
+    # YOLOv11 Training
+    "model_name": "yolo11l-cls.pt",
     "img_size": 224, # Model will automatically resize images to this size
     "batch_size": 32,
     "epochs": 100,
@@ -67,7 +67,6 @@ CONFIG = {
     "weight_decay": 0.01,
     "label_smoothing": 0.1,
     "patience": 10, # Patience is the number of epochs with no improvement after which training will be stopped
-    "early_stopping": True, # If True, training will stop if no improvement is seen for 'patience' epochs
 
 }
 

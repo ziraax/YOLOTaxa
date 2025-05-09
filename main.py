@@ -1,4 +1,5 @@
 from data_preprocessing import full_preprocessing, get_classes
+from train import train_model
 from config import CONFIG
 import wandb
 import traceback
@@ -8,13 +9,14 @@ def main():
         # Initialize a single W&B run
         wandb.init(
             project=CONFIG['project_name'],
-            job_type="preprocessing with parallelization",
+            job_type="Trying to train for first time",
             config=CONFIG,
-            tags=["preprocessing"]
+            tags=["training", "YOLOv8", "classification"],
         )
         
         # Run preprocessing
-        full_preprocessing()
+        # full_preprocessing()
+        train_model()
         
         # Log dataset artifact
         dataset_artifact = wandb.Artifact(
