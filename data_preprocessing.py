@@ -15,6 +15,7 @@ from collections import defaultdict
 from sklearn.utils import compute_class_weight
 from scalebar_removal import remove_scale_bars
 from data_organizer import organize_yolo_structure
+from utils.check_imgs import check_images
 from config import CONFIG
 from tqdm import tqdm
 
@@ -256,14 +257,28 @@ def full_preprocessing():
     # Step 2: Undersample overrepresented classes
     undersample_overrepresented_classes()   
 
+    # Check if images are broken 
+    check_images(CONFIG['processed_path'], delete=False)
+
     # Step 3: Organize YOLO structure
     organize_yolo_structure()
+
+    print(f"YOLO structure organized. Processed images saved to: {CONFIG['yolo_dataset_path']}")
+
+    # Check images again
+    check_images(CONFIG['yolo_dataset_path'], delete=False)
+
 
     # Step 4: Save class dist before augmenting
     before_aug = analyze_class_distribution()
 
     # Step 5: Augment data
     apply_class_aware_augmentation(before_aug)
+
+
+    # Check images again
+    print(f"Augmentation complete. Processed images saved to: {CONFIG['yolo_dataset_path']}")
+    check_images(CONFIG['yolo_dataset_path'], delete=False)
 
     # Step 6: Log sample images
     sample_images = []
