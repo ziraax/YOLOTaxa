@@ -2,38 +2,39 @@ import wandb
 import os
 
 from ultralytics import YOLO
+
+
 from config import CONFIG
 from data_preprocessing import log_class_distribution
 
 def train_model():
-    # Initialize Weights & Biases
-    wandb.init(
-        project=CONFIG['project_name'],
-        entity=CONFIG['entity'],
-        config=CONFIG,
-    )
 
+    ### TO BE USED LATER TO IMPLEMENT A CUSTOM TRAINING LOOP WITH WEIGHTED LOSS
     # Calculate and log class weights
-    class_weights = log_class_distribution()
-    wandb.config.update({"class_weights": class_weights})
+    # class_weights = log_class_distribution()
+    # wandb.config.update({"class_weights": class_weights})
+    # model.set_class_weights(class_weights) # this line is hypothetical 
+
 
     # Initialize YOLO model
     model = YOLO(CONFIG['model_name'])
-    model.set_class_weights(class_weights)
+
+    # Use sweep parameters
 
     # Train model 
     results = model.train(
-        data=os.path.join(CONFIG['dataset_path'], "dataset.yaml"),
-        epochs=CONFIG['epochs'],
+        data="/home/huwalter/WorkingFolderHugoWALTER/YOLOTaxa/DATA/yolo_dataset/",
+        epochs=wandb.config.epochs,
         imgsz=CONFIG['img_size'],
         batch=CONFIG['batch_size'],
         device=CONFIG['device'],
-        augment=True,
-        optimizer="AdamW",
+        augment=False,
+        optimizer=CONFIG['optimizer'],
         lr0=CONFIG['initial_lr'],
         weight_decay=CONFIG['weight_decay'],
         label_smoothing=CONFIG['label_smoothing'],
-        patience=15,
+        patience=CONFIG['patience'],
+        save_period=1, # Save model every epoch
         project=CONFIG['project_name'],
         name=wandb.run.name,
     )
